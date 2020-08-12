@@ -6,16 +6,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 export default function SidebarToggle(props) {
     return (
         <div css={{
-            width: '30px',
+            width: props.compact ? '100%' : '30px',
             height: '30px',
-            background: styles.primaryColor,
+            background: props.compact ? styles.primaryColor : 'transparent',
             position: 'absolute',
-            right: '10px',
+            right: '0',
             top: '15px',
             borderRadius: '0 5px 5px 0',
             cursor: 'pointer',
-            '@media (max-width: 420px)': {
-                right: props.mobileOffset
+            '@media (max-width: 799px)': {
+                right: props.mobileOffset,
+                background: styles.primaryColor,
+                width: '30px'
             }
         }}
         onClick={props.onClick}>
@@ -23,10 +25,10 @@ export default function SidebarToggle(props) {
                 color: styles.secondaryColor,
                 textAlign: 'center',
                 lineHeight: '30px',
-                fontSize: ' 14px'
+                fontSize: ' 14px',
             }}>
                 <div css={{
-                    '@media (max-width: 420px)': {
+                    '@media (max-width: 799px)': {
                         display: 'none'
                     }
                 }}>
@@ -34,7 +36,7 @@ export default function SidebarToggle(props) {
                 </div>
                 
                 <div css={{
-                    '@media (min-width: 420px)': {
+                    '@media (min-width: 799px)': {
                         display: 'none'
                     }
                 }}>

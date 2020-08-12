@@ -13,13 +13,14 @@ export default function SidebarItem(props) {
                 color: styles.secondaryColor,
                 cursor: 'pointer',
                 transition: 'background 0.2s',
+                borderBottom: '1px solid #1b244e',
                 '&:hover': {
                     background: styles.tertiaryColor,
                     'div:first-of-type': {
                         color: styles.secondaryColor
                     }
                 },
-                '@media (max-width: 420px)': {
+                '@media (max-width: 799px)': {
                     display: props.compact ? 'none' : 'flex'
                 }
             }}
@@ -39,7 +40,7 @@ export default function SidebarItem(props) {
                 fontWeight: '300',
                 fontSize: '14px',
                 display: props.compact ? 'none' : 'initial',
-                '@media (max-width: 420px)': {
+                '@media (max-width: 799px)': {
                     display: 'initial'
                 }
             }}>{props.label}</div>

@@ -4,18 +4,23 @@ import {
   Switch,
   Route
 } from "react-router-dom";
+import { Provider } from 'react-redux'
+import store from './redux/store'
 
 import CreditCardCapture from './containers/CreditCardCapture'
 
 function App() {
   return (
-    <Router>
-      <Switch>
-          <Route path="/capture">
-            <CreditCardCapture />
-          </Route>
-        </Switch>
-    </Router>
+    
+      <Router>
+        <Provider store={store}>
+          <Switch>
+            <Route path="/capture">
+              <CreditCardCapture />
+            </Route>
+          </Switch>
+        </Provider>
+      </Router>
   );
 }
 

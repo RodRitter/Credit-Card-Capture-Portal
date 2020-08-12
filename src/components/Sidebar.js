@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core'
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styles from '../style/variables'
 
 import { faCreditCard, faSignOutAlt, faAngleRight, faAngleLeft, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -16,12 +16,15 @@ export default function Sidebar() {
     return (
         <div css={{
             background: styles.primaryColor,
-            width: compact ? '56px' : '240px',
+            width: compact ? '56px' : '340px',
             height: '100vh',
             position: 'relative',
+            zIndex: '300',
             transition: 'all ease-in-out 0.15s',
-            '@media (max-width: 420px)': {
+            '@media (max-width: 799px)': {
                 width: compact ? '0' : '100%',
+                position: compact ? 'relative' : 'fixed',
+                marginRight: compact ? '30px' : '0'
             }
         }}>
 

@@ -1,0 +1,6 @@
+export default  {
+    ADD_CARD: 'ADD_CARD',
+    REMOVE_CARD: 'REMOVE_CARD',
+    ADD_BANNED: 'ADD_BANNED',
+    REMOVE_BANNED: 'REMOVE_BANNED'
+}
