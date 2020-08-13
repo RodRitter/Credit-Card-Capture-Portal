@@ -1,3 +1,5 @@
+![alt text](https://raw.githubusercontent.com/RodRitter/Credit-Card-Capture-Portal/master/public/screenshots/demo_browser.png "Capture Portal Snapshot")
+
 # Credit Card Processing Frontend
 A frontend that allows the user to process & validate multiple credit cards.
 
