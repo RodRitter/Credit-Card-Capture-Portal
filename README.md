@@ -3,7 +3,9 @@ A frontend that allows the user to process & validate multiple credit cards.
 
 ## Tech & Design Choices
 **EmotionJS (Styling)** - I decided to go with a CSS-in-JSX approach, using Emotion. This seems to be the trend lately with modular independant components that can be shared between projects. In a more rigid project, I would typically go with stylesheets using Sass. 
+
 **Redux (State Management)** - For all my global state management, I used Redux.
+
 **React Router (Routing)** - While there wasn't any routing involved, I decided to implement React Router anyway. This is the first thing I do when I start a new project.
 
 
