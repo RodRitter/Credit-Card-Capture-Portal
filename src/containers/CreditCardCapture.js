@@ -39,6 +39,9 @@ function CreditCardCapture(props) {
     const [loadingCountrySearch, setLoadingCountrySearch] = useState(false);
     const [cardNumber, setCardNumber] = useState('');
     const [readyCards, setReadyCards] = useState([]);
+    
+    const [serviceReady, setServiceReady] = useState(true);
+
     const [countrySearch, setCountrySearch] = useState('');
     const [searchedCountries, setSearchedCountries] = useState([]);
     const [error, setError] = useState('');
@@ -53,7 +56,7 @@ function CreditCardCapture(props) {
     }
 
     function processBatch() {
-        if(readyCards.length > 0) {
+        if(readyCards.length > 0 && serviceReady) {
             setLoading(true)
             let cardPromises = []
             readyCards.forEach((card) => {
@@ -71,7 +74,11 @@ function CreditCardCapture(props) {
             })
             .finally(() => {
                 setLoading(false)
+                setServiceReady(false)
+                window.setTimeout(() => setServiceReady(true), 30000)
             })
+        } else if(!serviceReady) {
+            showError('Credit Card service isn\'t ready')
         }
     }
 
@@ -265,6 +272,12 @@ function CreditCardCapture(props) {
 
                                 {readyCards.length > 0 ? <Button label='Process' onClick={processBatch} customStyle={{marginTop: '20px'}} disabled={loading} /> : ''}
                                 
+                                {!serviceReady ? <div css={{
+                                    fontSize: '14px',
+                                    color: '#ffac14'
+                                }}>
+                                    Quota reached. Please wait...
+                                </div> : ''}
 
                         </div>
                         

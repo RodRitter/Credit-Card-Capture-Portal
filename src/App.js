@@ -15,7 +15,7 @@ function App() {
       <Router>
         <Provider store={store}>
           <Switch>
-            <Route path="/capture">
+            <Route path="/">
               <CreditCardCapture />
             </Route>
           </Switch>

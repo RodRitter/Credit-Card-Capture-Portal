@@ -2,6 +2,7 @@
   "name": "credit-card-capture-portal",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://ritter.co.za/projects/shift",
   "dependencies": {
     "@emotion/core": "^10.0.34",
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
