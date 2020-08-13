@@ -318,7 +318,7 @@ function CreditCardCapture(props) {
                             {loadingCountrySearch ? <Spinner /> : ''}
                         </div>
 
-                        {searchedCountriesOnPage.splice(countriesPerPage*(countryPage-1)+1, countriesPerPage).map((country, index) => (
+                        {searchedCountriesOnPage.splice(countriesPerPage*(countryPage-1), countriesPerPage).map((country, index) => (
                             <PanelRow key={index}>
                                 <div css={{
                                     fontSize:'14px',
