@@ -17,6 +17,7 @@ import Page from '../components/Page'
 import PageHeading from '../components/PageHeading'
 import PanelGroup from '../components/PanelGroup'
 import Panel from '../components/Panel'
+import Pagination from '../components/Pagination'
 
 import CardInput from '../components/CardInput'
 import Input from '../components/Input'
@@ -35,15 +36,20 @@ const CardStatus = {
 function CreditCardCapture(props) {
 
     const [loading, setLoading] = useState(false);
+    const [loadingCountrySearch, setLoadingCountrySearch] = useState(false);
     const [cardNumber, setCardNumber] = useState('');
     const [readyCards, setReadyCards] = useState([]);
     const [countrySearch, setCountrySearch] = useState('');
+    const [searchedCountries, setSearchedCountries] = useState([]);
     const [error, setError] = useState('');
+
+    const [countryPage, setCountryPage] = useState(1);
+    const [countriesPerPage, setCountriesPerPage] = useState(10);
 
 
     function showError(text) {
         setError(null)
-        window.setInterval(() => setError(text), 200)
+        window.setTimeout(() => setError(text), 500)
     }
 
     function processBatch() {
@@ -73,15 +79,23 @@ function CreditCardCapture(props) {
         let ready = [...readyCards]
         results.forEach((res, index) => {
             const success = res.status === 'fulfilled'
-            const banned = false
+            
+            let banned = false
+            props.allBannedCountries.forEach(bannedCountry => {
+                if(res.value.country.alpha2 === bannedCountry.alpha2Code) {
+                    banned = true
+                }
+            })
+
             let status = CardStatus.DONE
 
             if(banned) status = CardStatus.BANNED
             else if(!success) status = CardStatus.ERROR
 
+
             ready[index].status = status
 
-            if(success) {
+            if(ready[index].status === CardStatus.DONE) {
                 props.addCard(ready[index])
             }
         })
@@ -129,6 +143,32 @@ function CreditCardCapture(props) {
         setReadyCards(newArr)
     }
 
+    function searchCountry() {
+        if(countrySearch === '') {
+            setSearchedCountries([])
+        } else {
+            setLoadingCountrySearch(true)
+            setCountryPage(1)
+            CardService.SearchCountry(countrySearch)
+            .then((results) => {
+                console.log(results)
+                setSearchedCountries(results)
+            })
+            .catch((err) => {
+                showError('Something went wrong with the country search service')
+            })
+            .finally(() => {
+                setLoadingCountrySearch(false)    
+            })
+        }
+
+        
+    }
+
+    function onCountryPaginateClick(page) {
+        setCountryPage(page)
+    }
+
     const RowStatus = (props) => (
         <div css={{
             display: 'flex',
@@ -151,10 +191,13 @@ function CreditCardCapture(props) {
         </div>
     )
 
+    const searchedCountriesOnPage = searchedCountries.length > 0 ? [...searchedCountries] : []
+
     return (
         <div css={{
             display: 'flex',
-            background: styles.secondaryColor
+            background: styles.secondaryColor,
+            height: '100%'
         }}>
             <Sidebar />
 
@@ -220,7 +263,7 @@ function CreditCardCapture(props) {
                                     '&:hover': {background: '#b5b5b5'}
                                 }} /> : ''}
 
-                                {readyCards.length > 0 ? <Button label='Process' onClick={processBatch} customStyle={{marginTop: '20px'}} /> : ''}
+                                {readyCards.length > 0 ? <Button label='Process' onClick={processBatch} customStyle={{marginTop: '20px'}} disabled={loading} /> : ''}
                                 
 
                         </div>
@@ -262,42 +305,78 @@ function CreditCardCapture(props) {
                         
                         <div css={{
                                 display: 'flex',
-                                flexWrap: 'wrap'
+                                flexWrap: 'wrap',
+                                marginBottom: '20px'
                         }}>
-                            <Input value={''} icon={faGlobeAfrica} placeholder='Search Country' customStyle={{fontSize: '16px', width: '325px'}} />
-                            <Button label='Add' onClick={addToBatch} customStyle={{marginLeft: '20px'}} />
+                            <Input value={countrySearch} onChange={(e) => setCountrySearch(e.target.value)} onKeyDown={(e) => {
+                                if(e.keyCode === 13) {
+                                    searchCountry()
+                                }
+                            }} icon={faGlobeAfrica} placeholder='Search Country' customStyle={{fontSize: '16px'}} />
+
+                            <Button label='Search' onClick={searchCountry} customStyle={{margin: '0 20px'}} disabled={loadingCountrySearch} />
+                            {loadingCountrySearch ? <Spinner /> : ''}
                         </div>
 
-                        {props.allBannedCountries.map((country, index) => {
-                            return (
-                                <PanelRow key={index}>
+                        {searchedCountriesOnPage.splice(countriesPerPage*(countryPage-1)+1, countriesPerPage).map((country, index) => (
+                            <PanelRow key={index}>
+                                <div css={{
+                                    fontSize:'14px',
+                                    alignSelf: 'center'
+                                }}>
+                                    {country.name} ({country.alpha2Code})
+                                </div>
 
-                                    <div css={{
-                                        fontSize: '12px',
-                                        lineHeight: '40px',
-                                        marginRight: '20px',
-                                        cursor: 'pointer',
-                                    }} onClick={() => props.removeBanned(country)}><FontAwesomeIcon icon={faTimes} /></div>
-                                    
-                                    <div css={{
-                                        fontFamily: '"Inconsolata", monospace',
-                                        fontSize: '16px',
-                                        lineHeight: '40px',
-                                        marginRight: '10px'
-                                    }}>
-                                        {country.name}
-                                    </div>
-                                </PanelRow>
-                                
-                            )
-                        })}
+                                <div css={{
+                                    fontSize:'12px',
+                                    alignSelf: 'center',
+                                    padding: '2px 5px',
+                                    borderRadius: '5px',
+                                    color: '#fff',
+                                    marginLeft: '20px',
+                                    background: styles.primaryColor,
+                                    cursor: 'pointer'
+                                }} onClick={() => {
+                                    props.addBanned(country)
+                                    setSearchedCountries([])
+                                    setCountrySearch('')
+                                }}>
+                                    Ban
+                                </div>
+                            </PanelRow>
+                        ))}
+
+                        {searchedCountries.length > 0 ? <Pagination count={searchedCountries.length} countPerPage={countriesPerPage} active={countryPage} onClick={onCountryPaginateClick} /> : ''}
+                        
                         
                     </Panel>
 
                     <Panel
                         title='Banned Countries'
                         basis='min(50%, 600px)'>
-                            test
+                            {props.allBannedCountries.map((country, index) => {
+                                return (
+                                    <PanelRow key={index}>
+
+                                        <div css={{
+                                            fontSize: '12px',
+                                            lineHeight: '40px',
+                                            marginRight: '20px',
+                                            cursor: 'pointer',
+                                        }} onClick={() => props.removeBanned(country)}><FontAwesomeIcon icon={faTimes} /></div>
+                                        
+                                        <div css={{
+                                            fontFamily: '"Inconsolata", monospace',
+                                            fontSize: '16px',
+                                            lineHeight: '40px',
+                                            marginRight: '10px'
+                                        }}>
+                                            {country.name}
+                                        </div>
+                                    </PanelRow>
+                                    
+                                )
+                            })}
                     </Panel>
 
                 </PanelGroup>

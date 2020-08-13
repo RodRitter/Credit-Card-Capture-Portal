@@ -8,8 +8,8 @@ export default function bannedReducer(state = defaultState, action) {
     switch (action.type) {
       case actionTypes.ADD_BANNED:
         let exists = false
-        state.countries.forEach(card => {
-          if(card.cardNumberClear === action.data.cardNumberClear) {
+        state.countries.forEach(country => {
+          if(country.alpha2Code === action.data.alpha2Code) {
             exists = true
           }
         })
@@ -22,12 +22,12 @@ export default function bannedReducer(state = defaultState, action) {
         let newBanned = [...state.countries]
 
         newBanned.forEach((country, index) => {
-          if(Number(country.alpha2) === Number(action.data.alpha2)) {
+          if(country.alpha2Code === action.data.alpha2Code) {
             newBanned.splice(index, 1)
           }
         })
         return {
-          cards: newBanned
+          countries: newBanned
         }
       default:
         return state

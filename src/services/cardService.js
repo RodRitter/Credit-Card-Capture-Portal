@@ -38,7 +38,7 @@ export default class CardService {
 
     static SearchCountry(term) {
         return new Promise((success, reject) => {
-            fetch(`https://restcountries.eu/rest/v2/name/${term}`)
+            fetch(`https://restcountries.eu/rest/v2/name/${term}?fields=name;alpha2Code`)
             .then(function(response) {
                 return response.json();
             })

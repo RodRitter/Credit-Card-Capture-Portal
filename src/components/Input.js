@@ -7,6 +7,8 @@ export default function Input(props) {
     return (
         <div css={{
             position: 'relative',
+            width: '100%', 
+            maxWidth: '325px'
         }}>
             <div css={{
                 position: 'absolute',
@@ -39,6 +41,7 @@ export default function Input(props) {
                 ...props.customStyle
             }} 
             onChange={props.onChange}
+            onKeyDown={props.onKeyDown}
             value={props.value}
             placeholder={props.placeholder} />
         </div>

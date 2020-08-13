@@ -24,7 +24,7 @@ export default function Sidebar() {
             '@media (max-width: 799px)': {
                 width: compact ? '0' : '100%',
                 position: compact ? 'relative' : 'fixed',
-                marginRight: compact ? '30px' : '0'
+                marginRight: compact ? '10px' : '0'
             }
         }}>
 
